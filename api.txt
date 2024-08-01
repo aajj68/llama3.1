@@ -1,34 +1,135 @@
-# Explicação do Código
-#
-#    api_url: Define o endereço da API. No exemplo, estamos assumindo que a API está sendo executada localmente na porta 9095.
-#    input_text: Texto de entrada que será enviado para a API.
-#    data: Dados a serem enviados no corpo da solicitação POST. Neste caso, estamos enviando um JSON com a chave text e o valor do texto de entrada.
-#    requests.post: Envia a solicitação POST para a API com o texto de entrada.
-#    response.json().get('result'): Obtém o resultado retornado pela API.
-#
-# Certifique-se de que a API está em execução e acessível na URL especificada antes de executar o código de exemplo. Ajuste a URL conforme necessário, dependendo de onde a API está sendo executada.
+O Open WebUI geralmente suporta uma série de métodos para interagir com o modelo de linguagem, incluindo, mas não se limitando a:
 
+    Enviar mensagens para o modelo de linguagem: Permite enviar prompts e receber respostas.
+    Obter informações sobre o modelo: Fornece detalhes como nome do modelo, versão, etc.
+    Gerenciamento de sessões: Permite criar, listar e excluir sessões.
+    Histórico de conversas: Permite acessar o histórico de mensagens em uma sessão.
+
+Vou fornecer um exemplo geral de como esses métodos podem ser estruturados e exemplos de consumo em Python. Note que a implementação específica pode variar, então ajustar os endpoints de acordo com a documentação específica do Open WebUI que você estiver usando é recomendado.
+Exemplos de Endpoints
+
+    Enviar mensagens para o modelo de linguagem:
+        Endpoint: POST /api/v1/chat
+        Payload: {"prompt": "Sua mensagem aqui"}
+
+    Obter informações sobre o modelo:
+        Endpoint: GET /api/v1/model
+        Payload: None
+
+    Gerenciamento de sessões:
+        Criar uma nova sessão: POST /api/v1/sessions
+        Listar todas as sessões: GET /api/v1/sessions
+        Excluir uma sessão: DELETE /api/v1/sessions/{session_id}
+
+    Histórico de conversas:
+        Endpoint: GET /api/v1/sessions/{session_id}/history
+        Payload: None
+
+Exemplo de Consumo em Python
+Enviar mensagens para o modelo
+
+python
 
 import requests
 
-# URL da API
-api_url = 'http://localhost:9095/api/predict'
+API_URL = "http://localhost:9090/api/v1/chat"
 
-# Texto a ser enviado para a API
-input_text = "Qual é a capital da França?"
+def send_message(prompt):
+    response = requests.post(API_URL, json={"prompt": prompt})
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
 
-# Dados a serem enviados na solicitação POST
-data = {
-    'text': input_text
-}
+if __name__ == "__main__":
+    prompt = "Qual é a capital da França?"
+    response = send_message(prompt)
+    print("Resposta do modelo:", response)
 
-# Enviar a solicitação POST
-response = requests.post(api_url, json=data)
+Obter informações sobre o modelo
 
-# Verificar o status da resposta
-if response.status_code == 200:
-    # Obter e imprimir o resultado
-    result = response.json().get('result')
-    print("Resultado:", result)
-else:
-    print("Erro ao chamar a API:", response.status_code, response.text)
+python
+
+API_URL = "http://localhost:9090/api/v1/model"
+
+def get_model_info():
+    response = requests.get(API_URL)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
+
+if __name__ == "__main__":
+    info = get_model_info()
+    print("Informações do modelo:", info)
+
+Gerenciamento de sessões
+Criar uma nova sessão
+
+python
+
+API_URL = "http://localhost:9090/api/v1/sessions"
+
+def create_session():
+    response = requests.post(API_URL)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
+
+if __name__ == "__main__":
+    session = create_session()
+    print("Nova sessão criada:", session)
+
+Listar todas as sessões
+
+python
+
+API_URL = "http://localhost:9090/api/v1/sessions"
+
+def list_sessions():
+    response = requests.get(API_URL)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
+
+if __name__ == "__main__":
+    sessions = list_sessions()
+    print("Sessões disponíveis:", sessions)
+
+Excluir uma sessão
+
+python
+
+API_URL = "http://localhost:9090/api/v1/sessions/{session_id}"
+
+def delete_session(session_id):
+    response = requests.delete(API_URL.format(session_id=session_id))
+    if response.status_code == 200:
+        return {"status": "success"}
+    else:
+        return {"error": response.text}
+
+if __name__ == "__main__":
+    session_id = "id_da_sessao"
+    result = delete_session(session_id)
+    print("Resultado da exclusão:", result)
+
+Histórico de conversas
+
+python
+
+API_URL = "http://localhost:9090/api/v1/sessions/{session_id}/history"
+
+def get_history(session_id):
+    response = requests.get(API_URL.format(session_id=session_id))
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
+
+if __name__ == "__main__":
+    session_id = "id_da_sessao"
+    history = get_history(session_id)
+    print("Histórico da sessão:", history)

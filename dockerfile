@@ -29,11 +29,17 @@ RUN apt-get update && apt-get install -y \
 # Clone o repositório do LLaMA 3.1
 RUN git clone https://github.com/facebookresearch/llama.git
 
+# Clone o repositório do Open WebUI
+RUN git clone https://github.com/openai/open-webui.git
+
 # Copie o requirements.txt para o container
 COPY requirements.txt /app/
 
 # Instale as dependências do LLaMA 3.1
 RUN cd llama && pip install -r /app/requirements.txt
+
+# Instale as dependências do Open WebUI
+RUN cd open-webui && pip install -r requirements.txt
 
 # Baixe o modelo LLaMA 3.1-130b
 RUN wget https://dl.fbaipublicfiles.com/llama/llama-3.1-130b.tar.gz && \
@@ -48,5 +54,5 @@ ENV CUDA_VISIBLE_DEVICES="0"  # Utilize a GPU 0
 # Exponha as portas para o serviço do LLaMA 3.1 e a interface web
 EXPOSE 9090 9095
 
-# Defina o comando para executar o serviço do LLaMA 3.1 e a interface web
-CMD ["sh", "-c", "python -m llama.server --model llama-3.1-130b --port 9090 & python -m llama.web_interface --port 9095"]
+# Defina o comando para executar o serviço do LLaMA 3.1 e o Open WebUI
+CMD ["sh", "-c", "python -m llama.server --model llama-3.1-130b --port 9090 & python -m open_webui.server --port 9095"]

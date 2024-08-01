@@ -1,24 +1,21 @@
-from flask import Flask, request, jsonify, render_template
-from ollama import Client
+import requests
 
-app = Flask(__name__)
-client = Client(host='http://localhost:9090')
+# URL da API e da interface web
+API_URL = "http://localhost:9090/api/v1/chat"
+WEBUI_URL = "http://localhost:9095/"
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def chat_with_llama(prompt):
+    response = requests.post(API_URL, json={"prompt": prompt})
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
 
-@app.route('/detect_language', methods=['POST'])
-def detect_language():
-    text = request.form['text']
-    response = client.chat(model='llama-3.1', messages=[
-        {
-            'role': 'user',
-            'content': f'Identify the dominant language of the following text: "{text}"',
-        },
-    ])
-    language = response['message'].strip()
-    return jsonify({'language': language})
+def main():
+    # Exemplo de conversa
+    prompt = "Qual é a capital da França?"
+    result = chat_with_llama(prompt)
+    print("Resposta do LLaMA:", result)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9095)
+if __name__ == "__main__":
+    main()

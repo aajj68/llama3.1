@@ -1,1 +1,1 @@
-docker build -t llama-web .
+docker build -t llama-open-webui .
