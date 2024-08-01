@@ -1,0 +1,34 @@
+# Explicação do Código
+#
+#    api_url: Define o endereço da API. No exemplo, estamos assumindo que a API está sendo executada localmente na porta 9095.
+#    input_text: Texto de entrada que será enviado para a API.
+#    data: Dados a serem enviados no corpo da solicitação POST. Neste caso, estamos enviando um JSON com a chave text e o valor do texto de entrada.
+#    requests.post: Envia a solicitação POST para a API com o texto de entrada.
+#    response.json().get('result'): Obtém o resultado retornado pela API.
+#
+# Certifique-se de que a API está em execução e acessível na URL especificada antes de executar o código de exemplo. Ajuste a URL conforme necessário, dependendo de onde a API está sendo executada.
+
+
+import requests
+
+# URL da API
+api_url = 'http://localhost:9095/api/predict'
+
+# Texto a ser enviado para a API
+input_text = "Qual é a capital da França?"
+
+# Dados a serem enviados na solicitação POST
+data = {
+    'text': input_text
+}
+
+# Enviar a solicitação POST
+response = requests.post(api_url, json=data)
+
+# Verificar o status da resposta
+if response.status_code == 200:
+    # Obter e imprimir o resultado
+    result = response.json().get('result')
+    print("Resultado:", result)
+else:
+    print("Erro ao chamar a API:", response.status_code, response.text)

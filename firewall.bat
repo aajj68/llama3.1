@@ -1,0 +1,1 @@
+netsh advfirewall firewall add rule name="Docker LLaMA 3.1" dir=in action=allow protocol=TCP localport=9095

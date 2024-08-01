@@ -1,0 +1,12 @@
+Estrutura do Diretório da Aplicação Flask
+
+Assumindo que você tem uma aplicação Flask simples, a estrutura do diretório app deve ser semelhante a esta:
+
+app/
+│
+├── __init__.py
+├── app.py
+├── templates/
+│   └── index.html
+└── static/
+    └── style.css
